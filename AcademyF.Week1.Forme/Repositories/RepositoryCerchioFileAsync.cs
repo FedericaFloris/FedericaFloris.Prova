@@ -7,28 +7,26 @@ using System.Threading.Tasks;
 
 namespace AcademyF.Week1.Forme.Repositories
 {
-    internal class RepositoryCerchioFile : IRepository<Cerchio>
+    internal class RepositoryCerchioFileAsync : IFileSerializable<Cerchio>
     {
-        //1)path
         string path = @"C:\Users\federica.floris\Desktop\AcademyF.Week1-master\AcademyF.Week1.Forme\Repositories\Cerchio.txt";
-        //recupero i cerchi da File
-        public  bool Aggiungi(Cerchio item)
+        public async Task<bool> AggiungiFileAsync(Cerchio item)
         {
-            //devo scrivere su file il cerchio da aggiungere
-            using ( StreamWriter sw = new StreamWriter(path, true))
+            using (StreamWriter sw = new StreamWriter(path, true))
             {
-                sw.WriteLine($"{item.Name}-{item.X}-{item.Y}-{item.Raggio}");
+                sw.WriteLineAsync($"{item.Name}-{item.X}-{item.Y}-{item.Raggio}");
             }
+           
             return true;
         }
 
-        public List<Cerchio> GetAll()
+        public async Task<List<Cerchio>> GetAllAsync()
         {
             List<Cerchio> cerchi = new List<Cerchio>();
 
             using (StreamReader sr = new StreamReader(path))
             {
-                string contenutoFile = sr.ReadToEnd();
+                string contenutoFile = await sr.ReadToEndAsync();
                 if (string.IsNullOrEmpty(contenutoFile))
                 {
                     return new List<Cerchio>();
@@ -52,7 +50,5 @@ namespace AcademyF.Week1.Forme.Repositories
                 return cerchi;
             }
         }
-
-        //recupero i cerchi da File
     }
 }
